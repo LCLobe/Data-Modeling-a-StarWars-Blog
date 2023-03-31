@@ -24,7 +24,7 @@ class Favourites(Base):
     __tablename__ = 'favourite'
     id = Column(Integer(), primary_key=True)
     user_id = Column(Integer, ForeignKey("user.id"))
-    post_id = Column(Integer, ForeignKey("user.id"))
+    post_id = Column(Integer, ForeignKey("post.id"))
     
     user = relationship("User", back_populates="user.favourites")
     post = relationship("Post", back_populates="post.favourites")
@@ -33,7 +33,7 @@ class Post(Base):
     __tablename__ = 'post'
     id = Column(Integer(), primary_key=True)
     owner_id = Column(Integer(), ForeignKey("user.id"))
-    media_id = Column(Integer(), ForeignKey("user.id"))
+    media_id = Column(Integer(), ForeignKey("planet.id"), ForeignKey("character.id"))
     media_type = Column(Enum(), nullable=False)
 
     favourites = relationship("Favourites", back_populates="favourites.post")
@@ -51,8 +51,8 @@ class Planet(Base):
     gravity = Column(String(250), nullable=True)
     radius = Column(String(250), nullable=True)
 
-    born_here = relationship("Character", back_populates("character.planet"))
-    post = relationship("Post", back_populates("post.planet_media"))
+    born_here = relationship("Character", back_populates="character.planet")
+    post = relationship("Post", back_populates="post.planet_media")
 
 class Character(Base):
     __tablename__ = 'character'
@@ -64,8 +64,8 @@ class Character(Base):
     eye_color = Column(String(250), nullable=True)
     origin_planet = Column(String(250), ForeignKey("planet.id"))
 
-    planet = relationship("Planet", back_populates("planet.born_here"))
-    post = relationship("Post", back_populates("post.character_media"))
+    planet = relationship("Planet", back_populates="planet.born_here")
+    post = relationship("Post", back_populates="post.character_media")
    
 # class Media(Base):
 #     __tablename__ = 'media'
